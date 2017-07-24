@@ -21,7 +21,27 @@ router.get('/api/find/:userInput', (req, res, next) => {
     url: 'https://api.musixmatch.com/ws/1.1/track.search',
     qs: propertiesObject
   }, function(err, response, body) {
-    console.log(response);
+    res.json(body);
+  });
+
+});
+
+//Get top 10 tracks
+router.get('/api/top-tracks', (req, res, next) => {
+  let result;
+
+  var propertiesObject = {
+    format:'json',
+    page_size: '9',
+    country: 'us',
+    apikey: process.env.musixMatchApiKey
+  };
+
+  request.get({
+    url: 'https://api.musixmatch.com/ws/1.1/chart.tracks.get',
+    qs: propertiesObject
+  }, function(err, response, body) {
+    console.log(body);
     res.json(body);
   });
 

@@ -6,10 +6,15 @@ const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const layouts      = require('express-ejs-layouts');
 const request      = require('request');
+const mongoose     = require('mongoose');
 const session      = require('express-session');
 const passport     = require('passport');
 const cors         = require('cors');
 require('dotenv').config();
+
+require('./config/passport-config');
+
+mongoose.connect(process.env.MONGODB_URI);
 
 
 
@@ -30,9 +35,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(layouts);
+app.use(session({
+  secret: 'sessionsSecret',
+  resave: true,
+  saveUninitialized: true
+}));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors());
+
+app.use(cors({
+  credentials: true,
+  origin: [ 'http://localhost:4200']
+}));
+
 
 
 const index = require('./routes/index');
@@ -40,6 +55,9 @@ app.use('/', index);
 
 const api = require('./routes/api');
 app.use('/', api);
+
+const auth = require('./routes/auth-routes');
+app.use('/', auth);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
