@@ -1,0 +1,47 @@
+.song-info {
+  text-align: left;
+  border: 1px solid #C9CDD0;
+  background-color: white;
+  padding: 20px 15px;
+  background-image: url('../cssTemplate/images/dark-tl.svg'), url('../cssTemplate/images/dark-tr.svg');
+  background-position: top left, top right;
+  background-repeat: no-repeat;
+  background-size: 6em;
+  margin-top: 5px;
+  list-style: none;
+  overflow: auto;
+  text-align: center;
+  h3, h4 {
+    margin-bottom: 0;
+
+  }
+  h3 {
+    color: black;
+  }
+  h4 {
+    font-style: italic;
+  }
+  button {
+    display: block;
+    margin: 0 auto;
+  }
+  img {
+    width: 200px;
+    float: left;
+    margin-right: 20px;
+  }
+  .song-text {
+    overflow: auto;
+  }
+}
+
+masonry {
+  width: 100%;
+}
+
+
+// .grid-item{
+//   box-sizing: border-box;
+//   width: 32%;
+//   padding: 10px;
+// }
