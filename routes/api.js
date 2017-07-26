@@ -41,7 +41,6 @@ router.get('/api/top-tracks', (req, res, next) => {
     url: 'https://api.musixmatch.com/ws/1.1/chart.tracks.get',
     qs: propertiesObject
   }, function(err, response, body) {
-    console.log(body);
     res.json(body);
   });
 
@@ -66,10 +65,127 @@ router.post('/api/findtracks/', (req, res, next) => {
     url: 'https://api.musixmatch.com/ws/1.1/track.search',
     qs: propertiesObject
   }, function(err, response, body) {
-    console.log(response);
     res.json(body);
   });
 
 });
+
+router.post('/api/save-song', (req, res, next) => {
+  if(!req.user) {
+    res.status(401).json({message: "You must be logged in to do this."});
+    return;
+  }
+
+  songExists = false;
+  req.user.favorites.forEach((oneSong)=> {
+    if(oneSong.songId.toString() === req.body.songId.toString()) {
+      console.log("Blah");
+      songExists = true;
+      return;
+    }
+  });
+
+  if(songExists) {
+    res.status(400).json({ message: "Song already saved"});
+    return;
+  }
+
+  const newSong = {
+    songId: req.body.songId,
+    songTitle: req.body.songTitle,
+    songArtist: req.body.songArtist,
+    artistId: req.body.artistId,
+    lyricUrl: req.body.lyricUrl
+  };
+  req.user.favorites.push(newSong);
+
+  req.user.save((err, updatedUser) => {
+    if (err) {
+      res.status(400).json(err);
+      return;
+    }
+
+    req.user.encryptedPassword = undefined;
+    res.status(200).json(req.user);
+  });
+});
+
+//Remove song
+
+router.post('/api/save-song', (req, res, next) => {
+  if(!req.user) {
+    res.status(401).json({message: "You must be logged in to do this."});
+    return;
+  }
+
+  songExists = false;
+  req.user.favorites.forEach((oneSong)=> {
+    if(oneSong.songId === req.body.songId) {
+      songExists = true;
+      return;
+    }
+  });
+
+  if(songExists) {
+    res.status(400).json({ message: "Song already saved"});
+    return;
+  }
+
+  const newSong = {
+    songId: req.body.songId,
+    songTitle: req.body.songTitle,
+    songArtist: req.body.songArtist,
+    artistId: req.body.artistId,
+    lyricUrl: req.body.lyricUrl
+  };
+  req.user.favorites.push(newSong);
+
+  req.user.save((err, updatedUser) => {
+    if (err) {
+      res.status(400).json(err);
+      return;
+    }
+
+    req.user.encryptedPassword = undefined;
+    res.status(200).json(req.user);
+  });
+});
+
+router.get('/api/song-by-id/:songId', (req, res, next) => {
+  var propertiesObject = {
+    track_id: req.params.songId,
+    format:'json',
+    callback:'callback',
+    apikey: process.env.musixMatchApiKey
+  };
+
+  request.get({
+    url: 'https://api.musixmatch.com/ws/1.1/track.get',
+    qs: propertiesObject
+  }, function(err, response, body) {
+
+    res.json(body);
+  });
+
+});
+
+router.get('/api/find-related/:artistId', (req, res, next) => {
+  var propertiesObject = {
+    artist_id: req.params.artistId,
+    format:'json',
+    callback:'callback',
+    apikey: process.env.musixMatchApiKey,
+    page_size: 5
+  };
+
+  request.get({
+    url: 'https://api.musixmatch.com/ws/1.1/artist.related.get',
+    qs: propertiesObject
+  }, function(err, response, body) {
+
+    res.json(body);
+  });
+});
+
 
 module.exports = router;

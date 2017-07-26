@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const SavedModel = require('./saved-model.js');
 
 const Schema = mongoose.Schema;
 
@@ -15,7 +16,16 @@ const myUserSchema = new Schema(
       required: true
     },
 
-    favorites: [String]
+    favorites: [SavedModel.schema],
+
+    recentSearches: [
+      {
+        typeOfSearch: String,
+        lyricQuery: String,
+        artistQuery: String,
+        trackQuery: String
+      }
+    ]
   },
   {
     timestamps: true
