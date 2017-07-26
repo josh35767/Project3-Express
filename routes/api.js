@@ -111,37 +111,25 @@ router.post('/api/save-song', (req, res, next) => {
 });
 
 //Remove song
-
-router.post('/api/save-song', (req, res, next) => {
+router.post('/api/remove-song', (req, res, next) => {
   if(!req.user) {
     res.status(401).json({message: "You must be logged in to do this."});
     return;
   }
 
+
   songExists = false;
-  req.user.favorites.forEach((oneSong)=> {
-    if(oneSong.songId === req.body.songId) {
-      songExists = true;
-      return;
+  req.user.favorites.forEach((oneSong, i)=> {
+    console.log(oneSong.songId.toString());
+    console.log(req.body.songId.toString());
+    if(oneSong.songId.toString() === req.body.songId.toString()) {
+      req.user.favorites.splice(i, 1);
     }
   });
 
-  if(songExists) {
-    res.status(400).json({ message: "Song already saved"});
-    return;
-  }
-
-  const newSong = {
-    songId: req.body.songId,
-    songTitle: req.body.songTitle,
-    songArtist: req.body.songArtist,
-    artistId: req.body.artistId,
-    lyricUrl: req.body.lyricUrl
-  };
-  req.user.favorites.push(newSong);
-
   req.user.save((err, updatedUser) => {
     if (err) {
+      console.log(err);
       res.status(400).json(err);
       return;
     }
@@ -186,6 +174,8 @@ router.get('/api/find-related/:artistId', (req, res, next) => {
     res.json(body);
   });
 });
+
+
 
 
 module.exports = router;
