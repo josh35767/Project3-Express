@@ -2,7 +2,7 @@
   text-align: left;
   border: 1px solid #C9CDD0;
   background-color: white;
-  padding: 20px 15px;
+  padding: 20px 20px;
   background-image: url('../cssTemplate/images/dark-tl.svg'), url('../cssTemplate/images/dark-tr.svg');
   background-position: top left, top right;
   background-repeat: no-repeat;
@@ -37,6 +37,12 @@
 
 masonry {
   width: 100%;
+}
+
+.wrapper.style3 {
+  padding-top: 2em !important;
+  background-color: #F3F6FA !important;
+  border-top: 2px solid rgb(203, 203, 203);
 }
 
 
