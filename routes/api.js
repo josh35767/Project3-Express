@@ -175,6 +175,42 @@ router.get('/api/find-related/:artistId', (req, res, next) => {
   });
 });
 
+router.get('/api/get-artist/:artistId', (req, res, next) => {
+  var propertiesObject = {
+    artist_id: req.params.artistId,
+    format:'json',
+    callback:'callback',
+    apikey: process.env.musixMatchApiKey,
+  };
+
+  request.get({
+    url: 'https://api.musixmatch.com/ws/1.1/artist.get',
+    qs: propertiesObject
+  }, function(err, response, body) {
+
+    res.json(body);
+  });
+});
+
+router.get('/api/get-artist-top/:id', (req, res, next) => {
+  var propertiesObject = {
+    f_artist_id: req.params.id,
+    s_track_rating:'desc',
+    quorum_factor:'1',
+    format:'json',
+    callback:'callback',
+    page_size: '25',
+    apikey: process.env.musixMatchApiKey
+  };
+
+  request.get({
+    url: 'https://api.musixmatch.com/ws/1.1/track.search',
+    qs: propertiesObject
+  }, function(err, response, body) {
+
+    res.json(body);
+  });
+});
 
 
 
